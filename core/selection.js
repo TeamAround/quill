@@ -2,6 +2,7 @@ import Parchment from 'parchment';
 import clone from 'clone';
 import equal from 'deep-equal';
 import Emitter from './emitter';
+import Quill from './quill';
 import logger from './logger';
 
 let debug = logger('quill:selection');
@@ -27,7 +28,7 @@ class Selection {
     this.lastRange = this.savedRange = new Range(0, 0);
     this.handleComposition();
     this.handleDragging();
-    this.emitter.listenDOM('selectionchange', document, () => {
+    this.emitter.listenDOM('selectionchange', Quill.getDocument(), () => {
       if (!this.mouseDown) {
         setTimeout(this.update.bind(this, Emitter.sources.USER), 1);
       }
@@ -75,10 +76,10 @@ class Selection {
   }
 
   handleDragging() {
-    this.emitter.listenDOM('mousedown', document.body, () => {
+    this.emitter.listenDOM('mousedown', Quill.getDocument().body, () => {
       this.mouseDown = true;
     });
-    this.emitter.listenDOM('mouseup', document.body, () => {
+    this.emitter.listenDOM('mouseup', Quill.getDocument().body, () => {
       this.mouseDown = false;
       this.update(Emitter.sources.USER);
     });
@@ -120,7 +121,7 @@ class Selection {
     let node, [leaf, offset] = this.scroll.leaf(index);
     if (leaf == null) return null;
     [node, offset] = leaf.position(offset, true);
-    let range = document.createRange();
+    let range = Quill.getDocument().createRange();
     if (length > 0) {
       range.setStart(node, offset);
       [leaf, offset] = this.scroll.leaf(index + length);
@@ -157,7 +158,7 @@ class Selection {
   }
 
   getNativeRange() {
-    let selection = document.getSelection();
+    let selection = Quill.getDocument().getSelection();
     if (selection == null || selection.rangeCount <= 0) return null;
     let nativeRange = selection.getRangeAt(0);
     if (nativeRange == null) return null;
@@ -174,7 +175,7 @@ class Selection {
   }
 
   hasFocus() {
-    return document.activeElement === this.root;
+    return Quill.getDocument().activeElement === this.root;
   }
 
   normalizedToRange(range) {
@@ -268,7 +269,7 @@ class Selection {
     if (startNode != null && (this.root.parentNode == null || startNode.parentNode == null || endNode.parentNode == null)) {
       return;
     }
-    let selection = document.getSelection();
+    let selection = Quill.getDocument().getSelection();
     if (selection == null) return;
     if (startNode != null) {
       if (!this.hasFocus()) this.root.focus();
@@ -287,7 +288,7 @@ class Selection {
           endOffset = [].indexOf.call(endNode.parentNode.childNodes, endNode);
           endNode = endNode.parentNode;
         }
-        let range = document.createRange();
+        let range = Quill.getDocument().createRange();
         range.setStart(startNode, startOffset);
         range.setEnd(endNode, endOffset);
         selection.removeAllRanges();
@@ -296,7 +297,7 @@ class Selection {
     } else {
       selection.removeAllRanges();
       this.root.blur();
-      document.body.focus();  // root.blur() not enough on IE11+Travis+SauceLabs (but not local VMs)
+      Quill.getDocument().body.focus();  // root.blur() not enough on IE11+Travis+SauceLabs (but not local VMs)
     }
   }
 

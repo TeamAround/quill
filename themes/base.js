@@ -7,6 +7,7 @@ import ColorPicker from '../ui/color-picker';
 import IconPicker from '../ui/icon-picker';
 import Picker from '../ui/picker';
 import Tooltip from '../ui/tooltip';
+import Quill from '../core/quill';
 
 
 const ALIGNS = [ false, 'center', 'right', 'justify' ];
@@ -30,11 +31,11 @@ class BaseTheme extends Theme {
   constructor(quill, options) {
     super(quill, options);
     let listener = (e) => {
-      if (!document.body.contains(quill.root)) {
-        return document.body.removeEventListener('click', listener);
+      if (!Quill.getDocument().body.contains(quill.root)) {
+        return Quill.getDocument().body.removeEventListener('click', listener);
       }
       if (this.tooltip != null && !this.tooltip.root.contains(e.target) &&
-          document.activeElement !== this.tooltip.textbox && !this.quill.hasFocus()) {
+          Quill.getDocument().activeElement !== this.tooltip.textbox && !this.quill.hasFocus()) {
         this.tooltip.hide();
       }
       if (this.pickers != null) {
@@ -45,7 +46,7 @@ class BaseTheme extends Theme {
         });
       }
     };
-    quill.emitter.listenDOM('click', document.body, listener);
+    quill.emitter.listenDOM('click', Quill.getDocument().body, listener);
   }
 
   addModule(name) {
@@ -121,7 +122,7 @@ BaseTheme.DEFAULTS = extend(true, {}, Theme.DEFAULTS, {
         image: function() {
           let fileInput = this.container.querySelector('input.ql-image[type=file]');
           if (fileInput == null) {
-            fileInput = document.createElement('input');
+            fileInput = Quill.getDocument().createElement('input');
             fileInput.setAttribute('type', 'file');
             fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon');
             fileInput.classList.add('ql-image');
@@ -250,7 +251,7 @@ function extractVideoUrl(url) {
 
 function fillSelect(select, values, defaultValue = false) {
   values.forEach(function(value) {
-    let option = document.createElement('option');
+    let option = Quill.getDocument().createElement('option');
     if (value === defaultValue) {
       option.setAttribute('selected', 'selected');
     } else {

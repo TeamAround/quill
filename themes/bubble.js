@@ -3,6 +3,7 @@ import Emitter from '../core/emitter';
 import BaseTheme, { BaseTooltip } from './base';
 import { Range } from '../core/selection';
 import icons from '../ui/icons';
+import Quill from '../quill';
 
 
 const TOOLBAR_CONFIG = [
@@ -64,7 +65,7 @@ class BubbleTooltip extends BaseTooltip {
           let bounds = this.quill.getBounds(new Range(index, length));
           this.position(bounds);
         }
-      } else if (document.activeElement !== this.textbox && this.quill.hasFocus()) {
+      } else if (Quill.getDocument().activeElement !== this.textbox && this.quill.hasFocus()) {
         this.hide();
       }
     });

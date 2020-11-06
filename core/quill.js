@@ -11,6 +11,7 @@ import Theme from './theme';
 
 let debug = logger('quill');
 
+let _window = window;
 
 class Quill {
   static debug(limit) {
@@ -54,6 +55,19 @@ class Quill {
         target.register();
       }
     }
+  }
+
+  static setWindow(__window) {
+    _window = __window;
+    Parchment.setWindow(_window);
+  }
+
+  static getWindow() {
+    return _window;
+  }
+
+  static getDocument() {
+    return _window.document;
   }
 
   constructor(container, options = {}) {
@@ -414,7 +428,7 @@ function expandConfig(container, userConfig) {
   userConfig = extend(true, {}, Quill.DEFAULTS, { modules: moduleConfig }, themeConfig, userConfig);
   ['bounds', 'container', 'scrollingContainer'].forEach(function(key) {
     if (typeof userConfig[key] === 'string') {
-      userConfig[key] = document.querySelector(userConfig[key]);
+      userConfig[key] = Quill.getDocument().querySelector(userConfig[key]);
     }
   });
   userConfig.modules = Object.keys(userConfig.modules).reduce(function(config, name) {

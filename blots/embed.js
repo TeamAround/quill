@@ -1,5 +1,6 @@
 import Parchment from 'parchment';
 import TextBlot from './text';
+import Quill from '../quill';
 
 const GUARD_TEXT = "\uFEFF";
 
@@ -7,13 +8,13 @@ const GUARD_TEXT = "\uFEFF";
 class Embed extends Parchment.Embed {
   constructor(node) {
     super(node);
-    this.contentNode = document.createElement('span');
+    this.contentNode = Quill.getDocument().createElement('span');
     this.contentNode.setAttribute('contenteditable', false);
     [].slice.call(this.domNode.childNodes).forEach((childNode) => {
       this.contentNode.appendChild(childNode);
     });
-    this.leftGuard = document.createTextNode(GUARD_TEXT);
-    this.rightGuard = document.createTextNode(GUARD_TEXT);
+    this.leftGuard = Quill.getDocument().createTextNode(GUARD_TEXT);
+    this.rightGuard = Quill.getDocument().createTextNode(GUARD_TEXT);
     this.domNode.appendChild(this.leftGuard);
     this.domNode.appendChild(this.contentNode);
     this.domNode.appendChild(this.rightGuard);
@@ -37,7 +38,7 @@ class Embed extends Parchment.Embed {
           startOffset: prevLength + text.length
         };
       } else {
-        textNode = document.createTextNode(text);
+        textNode = Quill.getDocument().createTextNode(text);
         this.parent.insertBefore(Parchment.create(textNode), this);
         range = {
           startNode: textNode,
@@ -52,7 +53,7 @@ class Embed extends Parchment.Embed {
           startOffset: text.length
         }
       } else {
-        textNode = document.createTextNode(text);
+        textNode = Quill.getDocument().createTextNode(text);
         this.parent.insertBefore(Parchment.create(textNode), this.next);
         range = {
           startNode: textNode,

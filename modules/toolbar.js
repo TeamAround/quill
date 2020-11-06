@@ -11,16 +11,16 @@ class Toolbar extends Module {
   constructor(quill, options) {
     super(quill, options);
     if (Array.isArray(this.options.container)) {
-      let container = document.createElement('div');
+      let container = Quill.getDocument().createElement('div');
       addControls(container, this.options.container);
       quill.container.parentNode.insertBefore(container, quill.container);
       this.container = container;
     } else if (typeof this.options.container === 'string') {
-      this.container = document.querySelector(this.options.container);
+      this.container = Quill.getDocument().querySelector(this.options.container);
     } else {
       this.container = this.options.container;
     }
-    if (!(this.container instanceof HTMLElement)) {
+    if (!(this.container instanceof Quill.getDocument().defaultView.HTMLElement)) {
       return debug.error('Container required for toolbar', this.options);
     }
     this.container.classList.add('ql-toolbar');
@@ -150,7 +150,7 @@ Toolbar.DEFAULTS = {};
 
 
 function addButton(container, format, value) {
-  let input = document.createElement('button');
+  let input = Quill.getDocument().createElement('button');
   input.setAttribute('type', 'button');
   input.classList.add('ql-' + format);
   if (value != null) {
@@ -164,7 +164,7 @@ function addControls(container, groups) {
     groups = [groups];
   }
   groups.forEach(function(controls) {
-    let group = document.createElement('span');
+    let group = Quill.getDocument().createElement('span');
     group.classList.add('ql-formats');
     controls.forEach(function(control) {
       if (typeof control === 'string') {
@@ -184,10 +184,10 @@ function addControls(container, groups) {
 }
 
 function addSelect(container, format, values) {
-  let input = document.createElement('select');
+  let input = Quill.getDocument().createElement('select');
   input.classList.add('ql-' + format);
   values.forEach(function(value) {
-    let option = document.createElement('option');
+    let option = Quill.getDocument().createElement('option');
     if (value !== false) {
       option.setAttribute('value', value);
     } else {

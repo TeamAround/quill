@@ -1,5 +1,6 @@
 import Parchment from 'parchment';
 import TextBlot from './text';
+import Quill from '../quill';
 
 
 class Cursor extends Parchment.Embed {
@@ -10,7 +11,7 @@ class Cursor extends Parchment.Embed {
   constructor(domNode, selection) {
     super(domNode);
     this.selection = selection;
-    this.textNode = document.createTextNode(Cursor.CONTENTS);
+    this.textNode = Quill.getDocument().createTextNode(Cursor.CONTENTS);
     this.domNode.appendChild(this.textNode);
     this._length = 0;
   }
@@ -76,7 +77,7 @@ class Cursor extends Parchment.Embed {
       } else {
         this.textNode.data = text;
         this.parent.insertBefore(Parchment.create(this.textNode), this);
-        this.textNode = document.createTextNode(Cursor.CONTENTS);
+        this.textNode = Quill.getDocument().createTextNode(Cursor.CONTENTS);
         this.domNode.appendChild(this.textNode);
       }
     }
