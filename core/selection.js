@@ -338,7 +338,8 @@ class Selection {
 
 
 function isTextNode(node) {
-  return node instanceof Text || ('ownerDocument' in node && node instanceof node.ownerDocument.defaultView.Text);
+  return node instanceof Text ||
+    (typeof node === 'object' && 'ownerDocument' in node && node instanceof node.ownerDocument.defaultView.Text);
 }
 
 

@@ -125,7 +125,7 @@ class Quill {
   addContainer(container, refNode = null) {
     if (typeof container === 'string') {
       let className = container;
-      container = document.createElement('div');
+      container = this.container.ownerDocument.createElement('div');
       container.classList.add(className);
     }
     this.container.insertBefore(container, refNode);

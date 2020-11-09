@@ -20,7 +20,10 @@ class Toolbar extends Module {
     } else {
       this.container = this.options.container;
     }
-    if (!(this.container instanceof Quill.getDocument().defaultView.HTMLElement)) {
+    if (
+      !(this.container instanceof HTMLElement) &&
+      !(typeof this.container === 'object' && 'ownerDocument' in this.container && this.container instanceof this.container.ownerDocument.defaultView.HTMLElement)
+    ) {
       return debug.error('Container required for toolbar', this.options);
     }
     this.container.classList.add('ql-toolbar');
