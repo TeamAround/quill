@@ -132,7 +132,7 @@ class Selection {
     } else {
       let side = 'left';
       let rect;
-      if (node instanceof Text) {
+      if (isTextNode(node)) {
         if (offset < node.data.length) {
           range.setStart(node, offset);
           range.setEnd(node, offset + 1);
@@ -212,13 +212,13 @@ class Selection {
     };
     [range.start, range.end].forEach(function(position) {
       let node = position.node, offset = position.offset;
-      while (!(node instanceof Text) && node.childNodes.length > 0) {
+      while (!isTextNode(node) && node.childNodes.length > 0) {
         if (node.childNodes.length > offset) {
           node = node.childNodes[offset];
           offset = 0;
         } else if (node.childNodes.length === offset) {
           node = node.lastChild;
-          offset = node instanceof Text ? node.data.length : node.childNodes.length + 1;
+          offset = isTextNode(node) ? node.data.length : node.childNodes.length + 1;
         } else {
           break;
         }
@@ -337,6 +337,11 @@ class Selection {
 }
 
 
+function isTextNode(node) {
+  return node instanceof Text || ('ownerDocument' in node && node instanceof node.ownerDocument.defaultView.Text);
+}
+
+
 function contains(parent, descendant) {
   try {
     // Firefox inserts inaccessible nodes around video elements
@@ -346,7 +351,7 @@ function contains(parent, descendant) {
   }
   // IE11 has bug with Text nodes
   // https://connect.microsoft.com/IE/feedback/details/780874/node-contains-is-incorrect
-  if (descendant instanceof Text) {
+  if (isTextNode(descendant)) {
     descendant = descendant.parentNode;
   }
   return parent.contains(descendant);
