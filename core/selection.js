@@ -2,8 +2,8 @@ import Parchment from 'parchment';
 import clone from 'clone';
 import equal from 'deep-equal';
 import Emitter from './emitter';
-import Quill from './quill';
 import logger from './logger';
+import Quill from './quill';
 
 let debug = logger('quill:selection');
 
@@ -121,7 +121,7 @@ class Selection {
     let node, [leaf, offset] = this.scroll.leaf(index);
     if (leaf == null) return null;
     [node, offset] = leaf.position(offset, true);
-    let range = Quill.getDocument().createRange();
+    let range = this.root.ownerDocument.createRange();
     if (length > 0) {
       range.setStart(node, offset);
       [leaf, offset] = this.scroll.leaf(index + length);
@@ -158,7 +158,7 @@ class Selection {
   }
 
   getNativeRange() {
-    let selection = Quill.getDocument().getSelection();
+    let selection = this.root.ownerDocument.getSelection();
     if (selection == null || selection.rangeCount <= 0) return null;
     let nativeRange = selection.getRangeAt(0);
     if (nativeRange == null) return null;
@@ -175,7 +175,7 @@ class Selection {
   }
 
   hasFocus() {
-    return Quill.getDocument().activeElement === this.root;
+    return this.root.ownerDocument.activeElement === this.root;
   }
 
   normalizedToRange(range) {
@@ -269,7 +269,7 @@ class Selection {
     if (startNode != null && (this.root.parentNode == null || startNode.parentNode == null || endNode.parentNode == null)) {
       return;
     }
-    let selection = Quill.getDocument().getSelection();
+    let selection = this.root.ownerDocument.getSelection();
     if (selection == null) return;
     if (startNode != null) {
       if (!this.hasFocus()) this.root.focus();
@@ -288,7 +288,7 @@ class Selection {
           endOffset = [].indexOf.call(endNode.parentNode.childNodes, endNode);
           endNode = endNode.parentNode;
         }
-        let range = Quill.getDocument().createRange();
+        let range = this.root.ownerDocument.createRange();
         range.setStart(startNode, startOffset);
         range.setEnd(endNode, endOffset);
         selection.removeAllRanges();
@@ -297,7 +297,7 @@ class Selection {
     } else {
       selection.removeAllRanges();
       this.root.blur();
-      Quill.getDocument().body.focus();  // root.blur() not enough on IE11+Travis+SauceLabs (but not local VMs)
+      this.root.ownerDocument.body.focus();  // root.blur() not enough on IE11+Travis+SauceLabs (but not local VMs)
     }
   }
 
