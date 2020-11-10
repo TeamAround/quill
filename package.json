@@ -36,7 +36,7 @@
     "deep-equal": "^1.0.1",
     "eventemitter3": "^2.0.3",
     "extend": "^3.0.2",
-    "parchment": "^1.1.4",
+    "parchment": "git+https://github.com/TeamAround/parchment.git#release/1.1.4-around",
     "quill-delta": "^3.6.2"
   },
   "devDependencies": {
