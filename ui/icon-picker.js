@@ -8,7 +8,7 @@ class IconPicker extends Picker {
     [].forEach.call(this.container.querySelectorAll('.ql-picker-item'), (item) => {
       item.innerHTML = icons[item.getAttribute('data-value') || ''];
     });
-    this.defaultItem = this.container.querySelector('.ql-selected');
+    this.defaultItem = this.container.querySelector('.ql-selected') || this.container.querySelector('.ql-picker-item');
     this.selectItem(this.defaultItem);
   }
 
